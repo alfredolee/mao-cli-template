@@ -1,0 +1,10 @@
+body {
+  background-color: #fff;
+}
+.test {
+  border-radius: 2px;
+}
+
+#root {
+  display: flex;
+}
