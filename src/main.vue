@@ -3,6 +3,7 @@
     <div class="test_inner">
       {{ message }}
     </div>
+    <img src="./bg.jpg" alt="ha" />
   </div>
 </template>
 

@@ -82,15 +82,15 @@ module.exports = {
         removeComments: false
       }
     }),
-    new HtmlWebpackExternalsPlugin({
-      externals: [
-        {
-          module: "vue",
-          entry: "https://cdn.bootcss.com/vue/2.6.10/vue.min.js",
-          global: "Vue"
-        }
-      ]
-    }),
+    // new HtmlWebpackExternalsPlugin({
+    //   externals: [
+    //     {
+    //       module: "vue",
+    //       entry: "https://cdn.bootcss.com/vue/2.6.10/vue.min.js",
+    //       global: "Vue"
+    //     }
+    //   ]
+    // }),
     new FriendlyErrorsWebpackPlugin()
   ],
   stats: "errors-only"
