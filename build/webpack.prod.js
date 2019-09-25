@@ -1,104 +1,106 @@
-const webpackMerge = require("webpack-merge");
-const OptimizeCssAssetsWebpackPlugin = require("optimize-css-assets-webpack-plugin");
-const SpeedMeasureWebpackPlugin = require("speed-measure-webpack-plugin");
-const { BundleAnalyzerPlugin } = require("webpack-bundle-analyzer");
-const TerserWebpackPlugin = require("terser-webpack-plugin");
-const HardSourceWebpackPlugin = require("hard-source-webpack-plugin");
-const PurgecssPlugin = require("purgecss-webpack-plugin");
-const webpack = require("webpack");
-const path = require("path");
-const glob = require("glob");
+const webpackMerge = require('webpack-merge');
+const OptimizeCssAssetsWebpackPlugin = require('optimize-css-assets-webpack-plugin');
+const SpeedMeasureWebpackPlugin = require('speed-measure-webpack-plugin');
+const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
+const TerserWebpackPlugin = require('terser-webpack-plugin');
+const HardSourceWebpackPlugin = require('hard-source-webpack-plugin');
+const PurgecssPlugin = require('purgecss-webpack-plugin');
+const webpack = require('webpack');
+const path = require('path');
+const glob = require('glob');
+const cssnano = require('cssnano');
+const libraryManifest = require('../public/library/library_manifest.json');
+const baseConfig = require('./webpack.base.js');
 
-const baseConfig = require("./webpack.base.js");
 const smp = new SpeedMeasureWebpackPlugin();
 const PATHS = {
-  src: path.join(__dirname, "../src")
+  src: path.join(__dirname, '../src'),
 };
 
 const prodConfig = {
-  mode: "production",
+  mode: 'production',
   output: {
-    filename: "[name]_[chunkhash].js"
+    filename: '[name]_[chunkhash].js',
   },
   module: {
     rules: [
       {
         test: /\.js$/,
-        include: path.resolve("src"),
+        include: path.resolve('src'),
         use: [
           {
-            loader: "thread-loader",
+            loader: 'thread-loader',
             options: {
-              worker: 3
-            }
+              worker: 3,
+            },
           },
-          "babel-loader?cacheDirectory=true"
-        ]
+          'babel-loader?cacheDirectory=true',
+        ],
       },
       {
         test: /\.(gif|png|jpe?g|svg)$/i,
         use: [
-          "file-loader",
+          'file-loader',
           {
-            loader: "image-webpack-loader",
+            loader: 'image-webpack-loader',
             options: {
               mozjpeg: {
                 progressive: true,
-                quality: 65
+                quality: 65,
               },
               // optipng.enabled: false will disable optipng
               optipng: {
-                enabled: false
+                enabled: false,
               },
               pngquant: {
                 quality: [0.65, 0.9],
-                speed: 4
+                speed: 4,
               },
               gifsicle: {
-                interlaced: false
+                interlaced: false,
               },
               // the webp option will enable WEBP
               webp: {
-                quality: 75
-              }
-            }
-          }
-        ]
-      }
-    ]
+                quality: 75,
+              },
+            },
+          },
+        ],
+      },
+    ],
   },
   optimization: {
     minimizer: [
       new TerserWebpackPlugin({
         parallel: false,
-        cache: true
-      })
+        cache: true,
+      }),
     ],
     splitChunks: {
       minSize: 0,
       cacheGroups: {
         commons: {
-          name: "commons",
-          chunks: "all",
-          minChunks: 2
-        }
-      }
-    }
+          name: 'commons',
+          chunks: 'all',
+          minChunks: 2,
+        },
+      },
+    },
   },
   plugins: [
-    // new BundleAnalyzerPlugin(),
+    new BundleAnalyzerPlugin(),
     new HardSourceWebpackPlugin(),
     new webpack.DllReferencePlugin({
-      manifest: require("../public/library/library_manifest.json")
+      manifest: libraryManifest,
     }),
     new OptimizeCssAssetsWebpackPlugin({
       assetNameRegExp: /\.css$/g,
-      cssProcessor: require("cssnano")
+      cssProcessor: cssnano,
     }),
     new PurgecssPlugin({
-      paths: glob.sync(`${PATHS.src}/**/*`, { nodir: true })
-    })
-  ]
+      paths: glob.sync(`${PATHS.src}/**/*`, { nodir: true }),
+    }),
+  ],
   // resolve: {
   //   alias: {
   //     vue: path.resolve(__dirname, "../node_modules/vue/dist/vue.min.js"),
@@ -113,4 +115,4 @@ const prodConfig = {
   // }
 };
 
-module.exports = webpackMerge(baseConfig, prodConfig);
+module.exports = webpackMerge(baseConfig, smp.wrap(prodConfig));

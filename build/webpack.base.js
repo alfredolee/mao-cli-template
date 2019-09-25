@@ -1,21 +1,20 @@
-const path = require("path");
-const { CleanWebpackPlugin } = require("clean-webpack-plugin");
-const FriendlyErrorsWebpackPlugin = require("friendly-errors-webpack-plugin");
-const MiniCssExtractPlugin = require("mini-css-extract-plugin");
-const HtmlWebpackPlugin = require("html-webpack-plugin");
-const HtmlWebpackExternalsPlugin = require("html-webpack-externals-plugin");
-const VueLoaderPlugin = require("vue-loader/lib/plugin");
+const path = require('path');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const FriendlyErrorsWebpackPlugin = require('friendly-errors-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const VueLoaderPlugin = require('vue-loader/lib/plugin');
 
 module.exports = {
   module: {
     rules: [
       {
         test: /\.js$/,
-        use: "babel-loader"
+        use: 'babel-loader',
       },
       {
         test: /\.vue$/,
-        use: "vue-loader"
+        use: 'vue-loader',
       },
       {
         test: /\.(css|scss)$/,
@@ -23,55 +22,55 @@ module.exports = {
           MiniCssExtractPlugin.loader,
           // "style-loader",
           {
-            loader: "css-loader",
+            loader: 'css-loader',
             options: {
               // modules: true,
-              importLoaders: 3
-            }
+              importLoaders: 3,
+            },
           },
-          "postcss-loader",
+          'postcss-loader',
           {
-            loader: "px2rem-loader",
+            loader: 'px2rem-loader',
             options: {
               remUnit: 75,
-              remPrecision: 8
-            }
+              remPrecision: 8,
+            },
           },
-          "sass-loader"
-        ]
+          'sass-loader',
+        ],
       },
       {
         test: /\.(jpg|png|gif)$/,
         use: {
-          loader: "url-loader",
+          loader: 'url-loader',
           options: {
-            name: "[name]-[hash].[ext]",
-            outputPath: "images/",
-            limit: 8192
-          }
-        }
+            name: '[name]-[hash].[ext]',
+            outputPath: 'images/',
+            limit: 8192,
+          },
+        },
       },
       {
         test: /\.(eot|ttf|svg|woff|woff2)$/,
         use: {
-          loader: "file-loader",
+          loader: 'file-loader',
           options: {
-            outputPath: "fonts/"
-          }
-        }
-      }
-    ]
+            outputPath: 'fonts/',
+          },
+        },
+      },
+    ],
   },
   plugins: [
     new MiniCssExtractPlugin({
-      filename: "[name]-[contenthash:8].css"
+      filename: '[name]-[contenthash:8].css',
     }),
     new CleanWebpackPlugin(),
     new VueLoaderPlugin(),
     new HtmlWebpackPlugin({
-      template: path.join(__dirname, "../public/index.html"),
-      filename: "index.html",
-      chunks: ["main"],
+      template: path.join(__dirname, '../public/index.html'),
+      filename: 'index.html',
+      chunks: ['main'],
       inject: true,
       minify: {
         html5: true,
@@ -79,8 +78,8 @@ module.exports = {
         preserveLineBreaks: false,
         minifyCSS: true,
         minifyJS: true,
-        removeComments: false
-      }
+        removeComments: false,
+      },
     }),
     // new HtmlWebpackExternalsPlugin({
     //   externals: [
@@ -91,7 +90,7 @@ module.exports = {
     //     }
     //   ]
     // }),
-    new FriendlyErrorsWebpackPlugin()
+    new FriendlyErrorsWebpackPlugin(),
   ],
-  stats: "errors-only"
+  stats: 'errors-only',
 };
