@@ -16,7 +16,6 @@ module.exports = env => {
             {
               loader: "css-loader",
               options: {
-                // modules: true,
                 importLoaders: 3
               }
             },
@@ -114,9 +113,13 @@ module.exports = env => {
           removeComments: false
         }
       })
-    ],
-    optimization: {
-      usedExports: true // .css 不需要tree shaking，要设置 sideEffects
-    }
+    ]
+    /**
+     * TODO: 开启 usedExports 就需要设置 sideEffects 来使 import "style.scss"不被 tree shaking。
+     * 但是, 设置 sideEffects 之后 .vue文件的css不会被打包出来
+     */
+    // optimization: {
+    //   usedExports: true
+    // }
   };
 };

@@ -1,14 +1,10 @@
 {
   "name": "mao-cli-template",
-  "sideEffects": [
-    "*.css",
-    "*.scss"
-  ],
   "version": "1.0.0",
   "description": "template for mao-cli",
   "main": "index.js",
   "scripts": {
-    "start": "http-server ./dist",
+    "start": "http-server dist",
     "eslint": "eslint ./build  --fix",
     "serve": "webpack-dev-server --config ./build/webpack.dev.js",
     "build": "webpack --env.production  --config ./build/webpack.prod.js",
