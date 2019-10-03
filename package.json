@@ -1,13 +1,19 @@
 {
   "name": "mao-cli-template",
+  "sideEffects": [
+    "*.css",
+    "*.scss"
+  ],
   "version": "1.0.0",
   "description": "template for mao-cli",
   "main": "index.js",
   "scripts": {
+    "start": "http-server ./dist",
     "eslint": "eslint ./build  --fix",
     "serve": "webpack-dev-server --config ./build/webpack.dev.js",
-    "build": "webpack --config ./build/webpack.prod.js",
-    "dll": "webpack --config ./build/webpack.dll.js"
+    "build": "webpack --env.production  --config ./build/webpack.prod.js",
+    "dll": "webpack --config ./build/webpack.dll.js",
+    "lib": "webpack --config ./build/webpack.library.js"
   },
   "keywords": [
     "template",
@@ -19,12 +25,14 @@
   "devDependencies": {
     "@babel/core": "^7.5.4",
     "@babel/plugin-syntax-dynamic-import": "^7.2.0",
+    "@babel/plugin-transform-runtime": "^7.6.2",
     "@babel/preset-env": "^7.5.4",
     "@babel/preset-react": "^7.0.0",
     "autoprefixer": "^9.6.1",
     "babel-eslint": "^10.0.3",
     "babel-loader": "^8.0.6",
     "clean-webpack-plugin": "^3.0.0",
+    "copy-webpack-plugin": "^5.0.4",
     "css-loader": "^3.0.0",
     "cssnano": "^4.1.10",
     "eslint": "^6.4.0",
@@ -32,11 +40,10 @@
     "eslint-loader": "^3.0.0",
     "eslint-plugin-import": "^2.18.2",
     "file-loader": "^4.0.0",
-    "friendly-errors-webpack-plugin": "^1.7.0",
     "glob": "^7.1.4",
     "hard-source-webpack-plugin": "^0.13.1",
-    "html-webpack-externals-plugin": "^3.8.0",
     "html-webpack-plugin": "^3.2.0",
+    "http-server": "^0.11.1",
     "image-webpack-loader": "^6.0.0",
     "mini-css-extract-plugin": "^0.7.0",
     "node-sass": "^4.12.0",
@@ -55,13 +62,14 @@
     "vue-template-compiler": "^2.6.10",
     "webpack": "^4.41.0",
     "webpack-bundle-analyzer": "^3.5.1",
-    "webpack-cli": "^3.3.5",
+    "webpack-cli": "^3.3.9",
     "webpack-dev-server": "^3.7.2",
     "webpack-merge": "^4.2.2"
   },
   "dependencies": {
     "lib-flexible": "^0.3.2",
     "vue": "^2.6.10",
-    "vue-router": "^3.1.3"
+    "vue-router": "^3.1.3",
+    "vuex": "^3.1.1"
   }
 }

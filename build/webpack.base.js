@@ -1,96 +1,122 @@
-const path = require('path');
-const { CleanWebpackPlugin } = require('clean-webpack-plugin');
-const FriendlyErrorsWebpackPlugin = require('friendly-errors-webpack-plugin');
-const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
-const VueLoaderPlugin = require('vue-loader/lib/plugin');
+const path = require("path");
+const HtmlWebpackPlugin = require("html-webpack-plugin");
+const VueLoaderPlugin = require("vue-loader/lib/plugin");
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
-module.exports = {
-  module: {
-    rules: [
-      {
-        test: /\.js$/,
-        use: 'babel-loader',
-      },
-      {
-        test: /\.vue$/,
-        use: 'vue-loader',
-      },
-      {
-        test: /\.(css|scss)$/,
-        use: [
-          MiniCssExtractPlugin.loader,
-          // "style-loader",
-          {
-            loader: 'css-loader',
-            options: {
-              // modules: true,
-              importLoaders: 3,
+module.exports = env => {
+  return {
+    module: {
+      rules: [
+        {
+          test: /\.(sa|sc|c)ss$/,
+          use: [
+            env && env.production
+              ? MiniCssExtractPlugin.loader
+              : "style-loader",
+            {
+              loader: "css-loader",
+              options: {
+                // modules: true,
+                importLoaders: 3
+              }
             },
-          },
-          'postcss-loader',
-          {
-            loader: 'px2rem-loader',
-            options: {
-              remUnit: 75,
-              remPrecision: 8,
+            "postcss-loader",
+            {
+              loader: "px2rem-loader",
+              options: {
+                remUnit: 75,
+                remPrecision: 8
+              }
             },
-          },
-          'sass-loader',
-        ],
-      },
-      {
-        test: /\.(jpg|png|gif)$/,
-        use: {
-          loader: 'url-loader',
-          options: {
-            name: '[name]-[hash].[ext]',
-            outputPath: 'images/',
-            limit: 8192,
-          },
+            "sass-loader"
+          ]
         },
-      },
-      {
-        test: /\.(eot|ttf|svg|woff|woff2)$/,
-        use: {
-          loader: 'file-loader',
-          options: {
-            outputPath: 'fonts/',
-          },
+        {
+          test: /\.js$/,
+          exclude: /node_modules/,
+          use: [
+            {
+              loader: "thread-loader",
+              options: {
+                worker: 3
+              }
+            },
+            "babel-loader?cacheDirectory=true"
+          ]
         },
-      },
+        {
+          test: /\.vue$/,
+          use: "vue-loader"
+        },
+        {
+          test: /\.(gif|png|jpe?g)$/i,
+          use: [
+            {
+              loader: "url-loader",
+              options: {
+                name: "[name]-[hash].[ext]",
+                outputPath: "images/",
+                limit: 8192
+              }
+            },
+            {
+              loader: "image-webpack-loader",
+              options: {
+                mozjpeg: {
+                  progressive: true,
+                  quality: 65
+                },
+                optipng: {
+                  enabled: false
+                },
+                pngquant: {
+                  quality: [0.65, 0.9],
+                  speed: 4
+                },
+                gifsicle: {
+                  interlaced: false
+                },
+                webp: {
+                  quality: 75
+                }
+              }
+            }
+          ]
+        },
+        {
+          test: /\.(eot|ttf|svg|woff|woff2)$/,
+          use: {
+            loader: "file-loader",
+            options: {
+              outputPath: "fonts/"
+            }
+          }
+        }
+      ]
+    },
+    plugins: [
+      new MiniCssExtractPlugin({
+        filename: "[name]-[contenthash:8].css",
+        chunkFilename: "[name].chunk.css" // 非直接被页面引用使用chunkFilename
+      }),
+      new VueLoaderPlugin(),
+      new HtmlWebpackPlugin({
+        template: path.join(__dirname, "../public/index.html"),
+        filename: "index.html",
+        chunks: ["main"],
+        inject: true,
+        minify: {
+          html5: true,
+          collapseWhitespace: true,
+          preserveLineBreaks: false,
+          minifyCSS: true,
+          minifyJS: true,
+          removeComments: false
+        }
+      })
     ],
-  },
-  plugins: [
-    new MiniCssExtractPlugin({
-      filename: '[name]-[contenthash:8].css',
-    }),
-    new CleanWebpackPlugin(),
-    new VueLoaderPlugin(),
-    new HtmlWebpackPlugin({
-      template: path.join(__dirname, '../public/index.html'),
-      filename: 'index.html',
-      chunks: ['main'],
-      inject: true,
-      minify: {
-        html5: true,
-        collapseWhitespace: true,
-        preserveLineBreaks: false,
-        minifyCSS: true,
-        minifyJS: true,
-        removeComments: false,
-      },
-    }),
-    // new HtmlWebpackExternalsPlugin({
-    //   externals: [
-    //     {
-    //       module: "vue",
-    //       entry: "https://cdn.bootcss.com/vue/2.6.10/vue.min.js",
-    //       global: "Vue"
-    //     }
-    //   ]
-    // }),
-    new FriendlyErrorsWebpackPlugin(),
-  ],
-  stats: 'errors-only',
+    optimization: {
+      usedExports: true // .css 不需要tree shaking，要设置 sideEffects
+    }
+  };
 };

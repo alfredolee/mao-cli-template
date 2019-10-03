@@ -1,9 +1,10 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
 
-import App from "./main.vue";
-import { test } from "./common";
-import "./a.scss";
+import App from "./App.vue";
+import { math, string, test } from "./common";
+import "./styles/a.scss";
+
 const router = new VueRouter({});
 test();
 new Vue({

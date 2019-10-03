@@ -1,20 +1,20 @@
-const path = require('path');
-const webpack = require('webpack');
+const path = require("path");
+const webpack = require("webpack");
 
 module.exports = {
-  mode: 'production',
+  mode: "production",
   entry: {
-    library: ['vue', 'vue-router'],
+    lib: ["vue", "vue-router", "vuex"]
   },
   output: {
-    filename: '[name]_[chunkhash].dll.js',
-    path: path.join(__dirname, '../public/library'),
-    library: '[name]_[chunkhash]',
+    filename: "[name]_[chunkhash].dll.js",
+    path: path.join(__dirname, "../public/lib"),
+    library: "[name]_[chunkhash]"
   },
   plugins: [
     new webpack.DllPlugin({
-      name: '[name]_[chunkhash]',
-      path: path.join(__dirname, '../public/library/[name]_manifest.json'),
-    }),
-  ],
+      name: "[name]_[chunkhash]",
+      path: path.join(__dirname, "../public/lib/[name]_manifest.json")
+    })
+  ]
 };
