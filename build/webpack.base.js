@@ -44,6 +44,11 @@ module.exports = env => {
           ]
         },
         {
+          test: /\.tsx?$/,
+          exclude: /node_modules/,
+          use: "ts-loader"
+        },
+        {
           test: /\.vue$/,
           use: "vue-loader"
         },

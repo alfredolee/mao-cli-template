@@ -5,8 +5,8 @@ const TerserWebpackPlugin = require("terser-webpack-plugin");
 module.exports = {
   mode: "none",
   entry: {
-    mao: path.resolve(__dirname, "../src/common/index.js"),
-    "mao.min": path.resolve(__dirname, "../src/common/index.js")
+    mao: path.resolve(__dirname, "../src/entrys/lib/index.js"),
+    "mao.min": path.resolve(__dirname, "../src/entrys/lib/index.js")
   },
   output: {
     filename: "[name].js",
