@@ -9,12 +9,13 @@ const devConfig = {
     open: true,
     hot: true,
     hotOnly: true,
+    overlay: true,
     before(app) {
-      app.get("/data", function(req, res) {
+      app.get("/data", (req, res) => {
         res.json({ data: "hello" });
       });
-    }
-  }
+    },
+  },
 };
 
-module.exports = env => webpackMerge(createBaseConfig(env), devConfig);
+module.exports = (env) => webpackMerge(createBaseConfig(env), devConfig);

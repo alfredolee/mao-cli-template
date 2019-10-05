@@ -96,7 +96,7 @@ const prodConfig = {
     //     )
     //   },
     modules: [path.resolve(__dirname, "../node_modules")],
-    extensions: [".js"]
+    extensions: [".js", ".jsx"]
     // mainFields: ["main"]
   }
 };
