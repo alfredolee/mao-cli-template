@@ -1,6 +1,6 @@
-import "./entrys/base";
+// import "./entrys/base";
 
-// import "./entrys/vue";
+import "./entrys/vue";
 // import "./entrys/ts/index.tsx";
 
 /**

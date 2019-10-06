@@ -3,6 +3,8 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 const AddAssetHtmlPlugin = require("add-asset-html-webpack-plugin");
 const VueLoaderPlugin = require("vue-loader/lib/plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const webpack = require("webpack");
+const libraryManifest = require("../dll/lib_manifest.json");
 
 module.exports = (env) => ({
   module: {
@@ -97,6 +99,9 @@ module.exports = (env) => ({
     ],
   },
   plugins: [
+    new webpack.DllReferencePlugin({
+      manifest: libraryManifest,
+    }),
     new MiniCssExtractPlugin({
       filename: "[name]-[contenthash:8].css",
       chunkFilename: "[name].chunk.css", // 非直接被页面引用使用chunkFilename

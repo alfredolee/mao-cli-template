@@ -5,13 +5,11 @@ const OptimizeCssAssetsWebpackPlugin = require("optimize-css-assets-webpack-plug
 const TerserWebpackPlugin = require("terser-webpack-plugin");
 const HardSourceWebpackPlugin = require("hard-source-webpack-plugin");
 const PurgecssPlugin = require("purgecss-webpack-plugin");
-const webpack = require("webpack");
 const path = require("path");
 const glob = require("glob");
 const cssnano = require("cssnano");
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 
-const libraryManifest = require("../dll/lib_manifest.json");
 const createBaseConfig = require("./webpack.base.js");
 
 // const smp = new SpeedMeasureWebpackPlugin();
@@ -54,9 +52,6 @@ const prodConfig = {
     new CleanWebpackPlugin(),
     // new BundleAnalyzerPlugin(),
     new HardSourceWebpackPlugin(), // 开启之后即使chunk对应文件没有变化，重新构建chunkhash也会变化
-    new webpack.DllReferencePlugin({
-      manifest: libraryManifest,
-    }),
     /**
      * TODO: 因为使用OptimizeCssAssetsWebpackPlugin导致 *.css.map 文件无法生成
      */
