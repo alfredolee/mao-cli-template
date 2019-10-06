@@ -1,5 +1,6 @@
 const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
+const AddAssetHtmlPlugin = require("add-asset-html-webpack-plugin");
 const VueLoaderPlugin = require("vue-loader/lib/plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
@@ -114,6 +115,9 @@ module.exports = (env) => ({
         minifyJS: true,
         removeComments: false,
       },
+    }),
+    new AddAssetHtmlPlugin({
+      filepath: path.resolve(__dirname, "../dll/*.dll.js"),
     }),
   ],
   /**

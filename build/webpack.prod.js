@@ -1,7 +1,7 @@
 const webpackMerge = require("webpack-merge");
 const OptimizeCssAssetsWebpackPlugin = require("optimize-css-assets-webpack-plugin");
-const SpeedMeasureWebpackPlugin = require("speed-measure-webpack-plugin");
-const { BundleAnalyzerPlugin } = require("webpack-bundle-analyzer");
+// const SpeedMeasureWebpackPlugin = require("speed-measure-webpack-plugin");
+// const { BundleAnalyzerPlugin } = require("webpack-bundle-analyzer");
 const TerserWebpackPlugin = require("terser-webpack-plugin");
 const HardSourceWebpackPlugin = require("hard-source-webpack-plugin");
 const PurgecssPlugin = require("purgecss-webpack-plugin");
@@ -10,30 +10,31 @@ const path = require("path");
 const glob = require("glob");
 const cssnano = require("cssnano");
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
-const CopyPlugin = require("copy-webpack-plugin");
 
-const libraryManifest = require("../public/lib/lib_manifest.json");
+const libraryManifest = require("../dll/lib_manifest.json");
 const createBaseConfig = require("./webpack.base.js");
 
 // const smp = new SpeedMeasureWebpackPlugin();
 const PATHS = {
-  src: path.join(__dirname, "../src")
+  src: path.join(__dirname, "../src"),
 };
 
 const prodConfig = {
   mode: "production",
-  devtool: "cheap-module-source-map",
+  devtool: "source-map",
   output: {
     filename: "[name]_[contenthash:8].js",
     chunkFilename: "[name]_[contenthash:8].chunk.js",
-    path: path.resolve(__dirname, "../dist")
+    path: path.resolve(__dirname, "../dist"),
   },
   optimization: {
+    minimize: true,
     minimizer: [
       new TerserWebpackPlugin({
-        parallel: false,
-        cache: true
-      })
+        parallel: true,
+        // cache: true, // 开启缓存
+        sourceMap: true,
+      }),
     ],
     splitChunks: {
       minSize: 0,
@@ -44,48 +45,31 @@ const prodConfig = {
           name: "commons",
           chunks: "all",
           reuseExistingChunk: true,
-          minChunks: 2
+          minChunks: 2,
         },
-        test: {
-          test(module, chunks) {
-            return module.type === "javascript/auto";
-          },
-          name: "test",
-          minChunks: 2
-        }
-      }
-    }
+      },
+    },
   },
   plugins: [
     new CleanWebpackPlugin(),
-    new CopyPlugin([
-      {
-        from: path.resolve(__dirname, "../public/lib/*.js"),
-        to: path.resolve(__dirname, "../dist/[name].js")
-      }
-    ]),
     // new BundleAnalyzerPlugin(),
     new HardSourceWebpackPlugin(), // 开启之后即使chunk对应文件没有变化，重新构建chunkhash也会变化
-    /**
-     * TODO: 在devtool: "cheap-module-source-map"模式下
-     *       因为使用 DllReferencePlugin导致 *.js.map 文件无法生成
-     */
     new webpack.DllReferencePlugin({
-      manifest: libraryManifest
+      manifest: libraryManifest,
     }),
     /**
      * TODO: 因为使用OptimizeCssAssetsWebpackPlugin导致 *.css.map 文件无法生成
      */
     new OptimizeCssAssetsWebpackPlugin({
       assetNameRegExp: /\.css$/g,
-      cssProcessor: cssnano
+      cssProcessor: cssnano,
     }),
     /**
      * TODO: PurgecssPlugin 会删除对 body或者html的样式编写
      */
     new PurgecssPlugin({
-      paths: glob.sync(`${PATHS.src}/**/*`, { nodir: true })
-    })
+      paths: glob.sync(`${PATHS.src}/**/*`, { nodir: true }),
+    }),
   ],
   resolve: {
     //   alias: {
@@ -96,9 +80,9 @@ const prodConfig = {
     //     )
     //   },
     modules: [path.resolve(__dirname, "../node_modules")],
-    extensions: [".js", ".jsx"]
+    extensions: [".js", ".jsx"],
     // mainFields: ["main"]
-  }
+  },
 };
 
-module.exports = env => webpackMerge(createBaseConfig(env), prodConfig);
+module.exports = (env) => webpackMerge(createBaseConfig(env), prodConfig);
